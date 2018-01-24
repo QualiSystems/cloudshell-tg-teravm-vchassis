@@ -1,0 +1,13 @@
+<Driver Description="Describe the purpose of your CloudShell shell" MainClass="driver.TeraVMVchassisDriver"
+        Name="TeraVMVchassisDriver" Version="1.0.0">
+    <Layout>
+        <Category Name="Hidden Commands1">
+            <Command Name="configure_device_command" Tags="" Description="configure vChassis">
+                <Parameters>
+                    <Parameter Name="resource_cache" Type="String" Mandatory="True" DefaultValue=""
+                               Description="pickle"/>
+                </Parameters>
+            </Command>
+        </Category>
+    </Layout>
+</Driver>
