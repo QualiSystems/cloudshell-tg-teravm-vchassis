@@ -71,7 +71,7 @@ class TeraVMClient(object):
         raise_for_status and resp.raise_for_status()
         return resp
 
-    def check_if_service_is_deployed(self):
+    def check_if_service_is_deployed(self, logger):
         """
 
         :return:
@@ -81,7 +81,8 @@ class TeraVMClient(object):
         except requests.exceptions.ConnectionError:
             return False
 
-        return resp.status_code == httplib.OK
+        if resp.status_code == httplib.OK and "executive management ip" in resp.content.lower():
+            return True
 
     def configure_executive_server(self, ip_addr):
         """"""
@@ -91,3 +92,13 @@ class TeraVMClient(object):
 
         resp = self._do_post(path="v1/legacy-ui/application/settings/executive-ip", data=data)
         return resp
+
+    def get_modules_info(self):
+        """Get test modules and ports information
+
+        :return:
+        """
+        response = self._do_get(path="v1/poolmanager/testModules")
+        data = response.json()
+
+        return data["testModules"]

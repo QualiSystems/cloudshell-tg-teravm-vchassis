@@ -20,6 +20,20 @@
                 <Rule Name="Configuration"/>
             </Rules>
         </AttributeInfo>
+        <AttributeInfo DefaultValue=""
+                       Description="The name of the TVM Comms network on the vCenter"
+                       IsReadOnly="false" Name="TVM Comms Network" Type="String">
+            <Rules>
+                <Rule Name="Configuration"/>
+            </Rules>
+        </AttributeInfo>
+        <AttributeInfo DefaultValue=""
+                       Description="The name of the TVM MGMT network on the vCenter"
+                       IsReadOnly="false" Name="TVM MGMT Network" Type="String">
+            <Rules>
+                <Rule Name="Configuration"/>
+            </Rules>
+        </AttributeInfo>
     </Attributes>
     <ResourceFamilies>
         <ResourceFamily Description="" IsConnectable="false" IsLockedByDefault="true" IsSearchable="true"
@@ -45,10 +59,18 @@
                         <AttachedAttribute IsLocal="true" IsOverridable="true" Name="Executive Server">
                             <AllowedValues/>
                         </AttachedAttribute>
+                        <AttachedAttribute Name="TVM Comms Network" IsOverridable="true" IsLocal="true">
+                            <AllowedValues/>
+                        </AttachedAttribute>
+                        <AttachedAttribute Name="TVM MGMT Network" IsOverridable="true" IsLocal="true">
+                            <AllowedValues/>
+                        </AttachedAttribute>
                     </AttachedAttributes>
                     <AttributeValues>
                         <AttributeValue Name="License Server" Value=""/>
                         <AttributeValue Name="Executive Server" Value=""/>
+                        <AttributeValue Name="TVM Comms Network" Value=""/>
+                        <AttributeValue Name="TVM MGMT Network" Value=""/>
                     </AttributeValues>
                     <ParentModels/>
                     <Drivers>

@@ -1,6 +1,6 @@
 import re
 
-from traffic.teravm.controller import constants
+# from traffic.teravm.controller import constants
 
 
 class TrafficGeneratorControllerResource(object):
