@@ -12,8 +12,8 @@ from cloudshell.devices.driver_helper import get_logger_with_thread_id
 from cloudshell.shell.core.driver_context import AutoLoadDetails
 from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
 from pyVim.connect import SmartConnect, Disconnect
+from cloudshell.traffic.teravm.api.client import TeraVMClient
 
-from traffic.teravm.chassis.client import TeraVMClient
 from traffic.teravm.deployment.runners.configuration_runner import TeraVMConfigurationRunner
 from traffic.teravm.vchassis.configuration_attributes_structure import TrafficGeneratorVChassisResource
 

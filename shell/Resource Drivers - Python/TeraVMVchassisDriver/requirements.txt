@@ -1,6 +1,5 @@
-requests
 cloudshell-shell-core>=3.1,<3.2
 cloudshell-automation-api>=7.1,<7.2
 cloudshell-networking-devices>=2.1,<2.2
-# for testing only
+cloudshell-tg-teravm>=1.0,<1.1
 cloudshell-cp-vcenter
