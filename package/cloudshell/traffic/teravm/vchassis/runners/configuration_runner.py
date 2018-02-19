@@ -1,5 +1,6 @@
-from traffic.teravm.controller.cli.ctrl_handler import TeraVMControllerCliHandler
-from traffic.teravm.deployment.flows.configure_license_server_flow import TeraVMConfigureLicenseServerFlow
+from cloudshell.traffic.teravm.cli.ctrl_handler import TeraVMControllerCliHandler
+
+from cloudshell.traffic.teravm.vchassis.flows.configure_license_server_flow import TeraVMConfigureLicenseServerFlow
 
 
 class TeraVMConfigurationRunner(object):

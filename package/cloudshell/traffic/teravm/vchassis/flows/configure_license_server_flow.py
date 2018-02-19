@@ -1,5 +1,6 @@
-from traffic.teravm.controller.cli import ctrl_command_templates
 from cloudshell.cli.command_template.command_template_executor import CommandTemplateExecutor
+
+from cloudshell.traffic.teravm.cli import ctrl_command_templates
 
 
 class TeraVMConfigureLicenseServerFlow(object):

@@ -11,22 +11,18 @@ from cloudshell.devices.driver_helper import get_cli
 from cloudshell.devices.driver_helper import get_logger_with_thread_id
 from cloudshell.shell.core.driver_context import AutoLoadDetails
 from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
-from pyVim.connect import SmartConnect, Disconnect
 from cloudshell.traffic.teravm.api.client import TeraVMClient
+from pyVim.connect import SmartConnect, Disconnect
 
-from traffic.teravm.deployment.runners.configuration_runner import TeraVMConfigurationRunner
-from traffic.teravm.vchassis.configuration_attributes_structure import TrafficGeneratorVChassisResource
+from cloudshell.traffic.teravm.vchassis.runners.configuration_runner import TeraVMConfigurationRunner
+from cloudshell.traffic.teravm.vchassis.configuration_attributes_structure import TrafficGeneratorVChassisResource
 
 
 VCENTER_RESOURCE_USER_ATTR = "User"
 VCENTER_RESOURCE_PASSWORD_ATTR = "Password"
 PORT_MAC_ADDRESS_ATTR = "MAC Address"
-
-ASSOCIATED_MODELS = ["Generic Traffic Generator Module"]
-ATTR_NUMBER_OF_PORTS = "Number of Ports"
-ATTR_OWNER_CHASSIS = "Virtual Traffic Generator Chassis"
-EXC_ATTRIBUTE_NOT_FOUND = "Expected resource model {0} to have attribute '{1}' but did not find it"
 SSH_SESSION_POOL = 1
+ASSOCIATED_MODELS = ["TeraVM Virtual Traffic Generator Module"]
 SERVICE_STARTING_TIMEOUT = 30 * 60
 MGMT_IP_TIMEOUT = 10 * 60
 
@@ -172,13 +168,6 @@ class TeraVMVchassisDriver(ResourceDriverInterface):
 
             tvm_api_client.configure_executive_server(ip_addr=resource_config.executive_server)
 
-            configuration_operations = TeraVMConfigurationRunner(resource_config=resource_config,
-                                                                 cli=self._cli,
-                                                                 cs_api=cs_api,
-                                                                 logger=logger)
-
-            configuration_operations.configure_license_server(license_server_ip=resource_config.license_server)
-
             resources = cPickle.loads(resource_cache)
 
             # update vBlades deployed Apps
@@ -201,6 +190,13 @@ class TeraVMVchassisDriver(ResourceDriverInterface):
                             mac_addr = test_if["macAddress"].lower()
                             port = port_map[mac_addr]
                             cs_api.UpdateResourceAddress(port.Name, "P{}".format(test_if["number"]))
+
+            configuration_operations = TeraVMConfigurationRunner(resource_config=resource_config,
+                                                                 cli=self._cli,
+                                                                 cs_api=cs_api,
+                                                                 logger=logger)
+
+            configuration_operations.configure_license_server(license_server_ip=resource_config.license_server)
 
     def get_inventory(self, context):
         """Discovers the resource structure and attributes.

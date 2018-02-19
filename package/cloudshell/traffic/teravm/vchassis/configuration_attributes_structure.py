@@ -101,7 +101,8 @@ class TrafficGeneratorVChassisResource(object):
         :param str shell_name: shell Name
         :rtype: TrafficGeneratorVBladeResource
         """
-        return cls(family=context.resource.family,
+        return cls(address=context.resource.address,
+                   family=context.resource.family,
                    shell_name=shell_name,
                    fullname=context.resource.fullname,
                    attributes=dict(context.resource.attributes),
