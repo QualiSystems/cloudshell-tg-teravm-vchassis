@@ -160,7 +160,7 @@ class TeraVMVchassisDriver(ResourceDriverInterface):
 
             logger.info("Updating resource address for the chassis to {}".format(mgmt_address))
             cs_api.UpdateResourceAddress(context.resource.fullname, mgmt_address)
-            context.resource.address = mgmt_address
+            resource_config.address = mgmt_address
 
             tvm_api_client = TeraVMClient(address=mgmt_address)
 
