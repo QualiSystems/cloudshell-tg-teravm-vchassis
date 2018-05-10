@@ -26,7 +26,8 @@ class TeraVMConfigurationRunner(object):
         return TeraVMControllerCliHandler(self._cli,
                                           self._resource_config,
                                           self._logger,
-                                          self._cs_api)
+                                          self._cs_api,
+                                          open_automation_auth=False)
 
     @property
     def configure_license_server_flow(self):
