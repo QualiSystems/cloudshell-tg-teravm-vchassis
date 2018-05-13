@@ -24,6 +24,7 @@ PORT_MAC_ADDRESS_ATTR = "MAC Address"
 SSH_SESSION_POOL = 1
 ASSOCIATED_MODELS = ["TeraVM Virtual Traffic Generator Module"]
 SERVICE_STARTING_TIMEOUT = 60 * 60
+SSH_STARTING_TIMEOUT = 60 * 60
 MGMT_IP_TIMEOUT = 30 * 60
 
 
@@ -98,6 +99,38 @@ class TeraVMVchassisDriver(ResourceDriverInterface):
                 raise Exception("TeraVM Controller service didn't start within {} minute(s)"
                                 .format(SERVICE_STARTING_TIMEOUT / 60))
             time.sleep(10)
+
+    def _execute_cli_configuration(self, resource_config, cs_api, logger):
+        """
+
+        :param resource_config:
+        :param cs_api:
+        :param logger:
+        :return:
+        """
+        timeout_time = datetime.now() + timedelta(seconds=SSH_STARTING_TIMEOUT)
+
+        while True:
+            logger.exception("Trying to configure license server via CLI....")
+
+            try:
+                configuration_operations = TeraVMConfigurationRunner(resource_config=resource_config,
+                                                                     cli=self._cli,
+                                                                     cs_api=cs_api,
+                                                                     logger=logger)
+
+                configuration_operations.configure_license_server(license_server_ip=resource_config.license_server)
+
+            except Exception as e: # todo: at least match specific exception
+                logger.exception("Unable to configure license server via CLI")
+
+                if datetime.now() > timeout_time:
+                    raise Exception("Unable to perform configure license CLI operation within {} minute(s)"
+                                    .format(SSH_STARTING_TIMEOUT / 60))
+            else:
+                return
+
+            time.sleep(5 * 60)
 
     @staticmethod
     def _find_module_by_mac(modules, mac_address):
@@ -191,12 +224,11 @@ class TeraVMVchassisDriver(ResourceDriverInterface):
                             port = port_map[mac_addr]
                             cs_api.UpdateResourceAddress(port.Name, "P{}".format(test_if["number"]))
 
-            configuration_operations = TeraVMConfigurationRunner(resource_config=resource_config,
-                                                                 cli=self._cli,
-                                                                 cs_api=cs_api,
-                                                                 logger=logger)
+            logger.info("Executing CLI configuration commands")
 
-            configuration_operations.configure_license_server(license_server_ip=resource_config.license_server)
+            self._execute_cli_configuration(resource_config=resource_config,
+                                            cs_api=cs_api,
+                                            logger=logger)
 
     def get_inventory(self, context):
         """Discovers the resource structure and attributes.
