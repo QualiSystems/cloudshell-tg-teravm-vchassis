@@ -133,7 +133,7 @@ class TeraVMVchassisDriver(ResourceDriverInterface):
             time.sleep(5 * 60)
 
     @staticmethod
-    def _find_module_by_mac(modules, mac_address):
+    def _find_module_by_mac(modules, mac_address, logger):
         """
 
         :param modules:
@@ -145,6 +145,11 @@ class TeraVMVchassisDriver(ResourceDriverInterface):
         for module in modules:
             if module["macAddress"].lower() == mac_address:
                 return module
+
+        logger.error("Unable to find Module with MAC Address: {}. Models info from controller: {}"
+                     .format(mac_address, modules))
+
+        raise Exception("Unable to find Module with MAC Address {}".format(mac_address))
 
     def configure_device_command(self, context, resource_cache):
         """Configure Virtual Chassis
@@ -195,10 +200,16 @@ class TeraVMVchassisDriver(ResourceDriverInterface):
             cs_api.UpdateResourceAddress(context.resource.fullname, mgmt_address)
             resource_config.address = mgmt_address
 
-            tvm_api_client = TeraVMClient(address=mgmt_address)
+            api_password = cs_api.DecryptPassword(resource_config.api_password).Value
 
+            tvm_api_client = TeraVMClient(address=mgmt_address,
+                                          user=resource_config.api_user,
+                                          password=api_password)
+
+            logger.info("Waiting for Service to be deployed... ")
             self._wait_for_service_deployment(tvm_api_client, logger)
 
+            logger.info("Configuring Executive Server")
             tvm_api_client.configure_executive_server(ip_addr=resource_config.executive_server)
 
             resources = cPickle.loads(resource_cache)
@@ -208,7 +219,7 @@ class TeraVMVchassisDriver(ResourceDriverInterface):
 
             for deployed_app in resources.values():
                 if deployed_app.ResourceModelName in ASSOCIATED_MODELS:
-                    module = self._find_module_by_mac(modules=modules, mac_address=deployed_app.Address)
+                    module = self._find_module_by_mac(modules=modules, mac_address=deployed_app.Address, logger=logger)
                     cs_api.UpdateResourceAddress(deployed_app.Name, "{}/M{}".format(mgmt_address, module["number"]))
 
                     port_map = {}
@@ -259,6 +270,8 @@ if __name__ == "__main__":
 
     user = 'cli'
     password = 'diversifEye'
+    api_user = "admin"
+    api_password = "admin"
     port = 443
     scheme = "https"
     auth_key = 'h8WRxvHoWkmH8rLQz+Z/pg=='
@@ -273,6 +286,8 @@ if __name__ == "__main__":
     context.resource.attributes = {}
     context.resource.attributes['User'] = user
     context.resource.attributes['Password'] = password
+    context.resource.attributes['API User'] = api_user
+    context.resource.attributes['API Password'] = api_password
     context.resource.attributes['TVM Comms Network'] = "TVM_Comms_VLAN_99"
     context.resource.attributes['TVM MGMT Network'] = "TVM_Mgmt"
     context.resource.attributes['Executive Server'] = "192.168.42.220"

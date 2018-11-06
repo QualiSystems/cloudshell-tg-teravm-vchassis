@@ -38,6 +38,22 @@ class TrafficGeneratorVChassisResource(object):
         return self.attributes.get("{}Password".format(self.namespace_prefix), None)
 
     @property
+    def api_user(self):
+        """
+
+        :rtype: str
+        """
+        return self.attributes.get("{}API User".format(self.namespace_prefix), None)
+
+    @property
+    def api_password(self):
+        """
+
+        :rtype: string
+        """
+        return self.attributes.get("{}API Password".format(self.namespace_prefix), None)
+
+    @property
     def cli_connection_type(self):
         """
 
