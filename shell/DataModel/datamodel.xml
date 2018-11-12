@@ -93,6 +93,7 @@
                     <ParentModels/>
                     <Drivers>
                         <DriverName>TeraVMVchassisDriver</DriverName>
+                        <DriverName>TeraVMVchassisDriver 14.1</DriverName>
                     </Drivers>
                     <Scripts/>
                 </ResourceModel>

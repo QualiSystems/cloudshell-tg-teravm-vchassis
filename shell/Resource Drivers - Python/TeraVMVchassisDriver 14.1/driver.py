@@ -200,7 +200,11 @@ class TeraVMVchassisDriver(ResourceDriverInterface):
             cs_api.UpdateResourceAddress(context.resource.fullname, mgmt_address)
             resource_config.address = mgmt_address
 
-            tvm_api_client = TeraVMClient(address=mgmt_address)
+            api_password = cs_api.DecryptPassword(resource_config.api_password).Value
+
+            tvm_api_client = TeraVMClient(address=mgmt_address,
+                                          user=resource_config.api_user,
+                                          password=api_password)
 
             logger.info("Waiting for Service to be deployed... ")
             self._wait_for_service_deployment(tvm_api_client, logger)
